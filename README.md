@@ -1,1 +1,1 @@
-# electronics2_final_project
+# Electronics II: Final Project
