@@ -2,20 +2,34 @@
 #include "SR04.h"
 
 Servo servo;
+Servo l_motor;
+Servo r_motor;
+
 int pos = 90; // Current servo position.
+int r_speed = 0;
+int l_speed = 0;
+int turnDelay = 1000;
+int reverseDelay = 1000;
 int distance = 100; // Measured distance to obstacle. Set to some value at start.
 int collision = 20; // Collision distance. Change if car needs to stop earlier/later.
 int dir = 1;
+int stuck = 0;
 
-int servoPin = 9; // PIN: Servo
-int echoPin = 11; // PIN: US-Sensor Echo
-int trigPin = 12; // PIN: US-Sensor Trig
+int servoPin = 9;  // PIN: Servo
+int echoPin = 11;  // PIN: US-Sensor Echo
+int trigPin = 12;  // PIN: US-Sensor Trig
+int lMotorPin = 5; // PIN: Left Motor
+int rMotorPin = 6; // PIN: Right Motor
 
 SR04 sr04 = SR04(echoPin, trigPin);
 
 void setup() {
   servo.attach(servoPin);
+  l_motor.attach(lMotorPin);
+  r_motor.attach(rMotorPin);
   servo.write(pos);
+  l_motor.write(l_speed);
+  r_motor.write(r_speed);
   Serial.begin(115200);
   Serial.println("Started");
 }
@@ -27,19 +41,20 @@ void loop() {
   Serial.print("Distance: ");
   Serial.println(distance);
 
-  if (distance <= collision) { // Check if there are obstacles too close
-    Serial.println("Stop");
+  if (distance <= collision || stuck == 1) { // Check if there are obstacles too close
     moveStop();
     dir = scanDirections();
     if (dir == -1) {
-      Serial.println("Turn Left");
+      stuck = 0;
       turnLeft();
-    } else {
-      Serial.println("Turn Right");
+    } else if (dir == 1) {
+      stuck = 0;
       turnRight();
+    } else if (dir == 0) {
+      stuck = 1;
+      moveBackward();
     }
   } else {
-    Serial.println("Move Forward");
     moveForward();
   }
 }
@@ -50,10 +65,12 @@ int scanDirections() {
   int left  = scanLeft();
   Serial.println(left);
   
-  if (right > left) {
+  if (right>left && right>collision) {
     return 1;
-  } else {
+  } else if (right<left && left>collision){
     return -1;
+  } else {
+    return 0;
   }
 }
 
@@ -83,24 +100,45 @@ int scanLeft() {
   return dist_l;
 }
 
+void moveCar() {
+  l_motor.write(l_speed);
+  r_motor.write(r_speed);
+}
+
 void moveForward() {
-  // Move the car forward
-  // code here
+  Serial.println("Move Forward");
+  l_speed = 150;
+  r_speed = 30;
+  moveCar();
 }
 
 void moveBackward() {
-  // Move the car backward
-  // code here
+  Serial.println("Move Backward");
+  l_speed = 30;
+  r_speed = 150;
+  moveCar();
+  delay(reverseDelay);
+  moveStop();
 }
 
 void moveStop() {
-  // Stop the car
-  // code here
+  Serial.println("Stop");
+  l_speed = 90;
+  r_speed = 90;
+  moveCar();
 }
 
 void turnRight() {
-  // code here
+  Serial.println("Turn Right");
+  l_speed = 150;
+  r_speed = 90;
+  moveCar();
+  delay(turnDelay);
 }
 void turnLeft() {
-  // code here
+  Serial.println("Turn Left");
+  l_speed = 90;
+  r_speed = 30;
+  moveCar();
+  delay(turnDelay);
 }
