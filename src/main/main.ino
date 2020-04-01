@@ -8,8 +8,8 @@ Servo r_motor;
 int pos = 90; // Current servo position.
 int r_speed = 0;
 int l_speed = 0;
-int turnDelay = 1000;
-int reverseDelay = 1000;
+int turnDelay = 1000; //How long the car will turn
+int reverseDelay = 1000; //How long the car will reverse
 int distance = 100; // Measured distance to obstacle. Set to some value at start.
 int collision = 20; // Collision distance. Change if car needs to stop earlier/later.
 int dir = 1;
