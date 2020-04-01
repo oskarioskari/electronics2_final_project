@@ -134,6 +134,7 @@ void turnRight() {
   r_speed = 90;
   moveCar();
   delay(turnDelay);
+  moveStop();
 }
 void turnLeft() {
   Serial.println("Turn Left");
@@ -141,4 +142,5 @@ void turnLeft() {
   r_speed = 30;
   moveCar();
   delay(turnDelay);
+  moveStop();
 }
