@@ -5,16 +5,20 @@ Servo servo;
 Servo l_motor;
 Servo r_motor;
 
-int pos = 90; // Current servo position.
-int r_speed = 0;
-int l_speed = 0;
-int turnDelay = 1000; //How long the car will turn
-int reverseDelay = 1000; //How long the car will reverse
-int distance = 100; // Measured distance to obstacle. Set to some value at start.
+// These values can be changed if needed:
+int turnDelay = 1000; // How long the car will turn. Exact value needs to be calculated once the design for wheels is finalized.
+int reverseDelay = 1000; // How long the car will reverse each time. Change if needed.
 int collision = 20; // Collision distance. Change if car needs to stop earlier/later.
+
+int pos = 90; // Servo position.
+int r_speed = 90; // Right motor speed.
+int l_speed = 90; // Left motor speed.
+
+int distance = 100;
 int dir = 1;
 int stuck = 0;
 
+// Pin numbers:
 int servoPin = 9;  // PIN: Servo
 int echoPin = 11;  // PIN: US-Sensor Echo
 int trigPin = 12;  // PIN: US-Sensor Trig
@@ -41,7 +45,7 @@ void loop() {
   Serial.print("Distance: ");
   Serial.println(distance);
 
-  if (distance <= collision || stuck == 1) { // Check if there are obstacles too close
+  if (distance <= collision || stuck == 1) { // Check if there are obstacles too close or if the car is stuck.
     moveStop();
     dir = scanDirections();
     if (dir == -1) {
@@ -50,7 +54,7 @@ void loop() {
     } else if (dir == 1) {
       stuck = 0;
       turnRight();
-    } else if (dir == 0) {
+    } else if (dir == 0) { // If stuck, reverse.
       stuck = 1;
       moveBackward();
     }
@@ -117,7 +121,7 @@ void moveBackward() {
   l_speed = 30;
   r_speed = 150;
   moveCar();
-  delay(reverseDelay);
+  delay(reverseDelay); // Adjusts the distance the car will reverse.
   moveStop();
 }
 
