@@ -7,9 +7,9 @@ Servo l_motor;
 Servo r_motor;
 
 // These values can be changed if needed:
-int turnDelay = 1000; // How long the car will turn. Exact value needs to be calculated once the design for wheels is finalized.
+int turnDelay = 500; // How long the car will turn. Exact value needs to be calculated once the design for wheels is finalized.
 int reverseDelay = 1000; // How long the car will reverse each time. Change if needed.
-int collision = 20; // Collision distance. Change if car needs to stop earlier/later.
+int collision = 25; // Collision distance. Change if car needs to stop earlier/later.
 
 int pos = 90; // Servo position.
 int r_speed = 90; // Right motor speed.
