@@ -10,9 +10,9 @@ Servo l_motor;
 Servo r_motor;
 
 // These values can be changed if needed:
-int turnDelay = 1000; // How long the car will turn. Exact value needs to be calculated once the design for wheels is finalized.
+int turnDelay = 500; // How long the car will turn. Exact value needs to be calculated once the design for wheels is finalized.
 int reverseDelay = 1000; // How long the car will reverse each time. Change if needed.
-int collision = 20; // Collision distance. Change if car needs to stop earlier/later.
+int collision = 25; // Collision distance. Change if car needs to stop earlier/later.
 
 int pos = 90; // Servo position.
 int r_speed = 90; // Right motor speed.
@@ -68,7 +68,7 @@ void setup() {
 }
 
 void loop() {
-  delay(100); // TODO: This might not be needed. Useful when debugging.
+  //delay(100); // TODO: This might not be needed. Useful when debugging.
 
   Blynk.run();
   
@@ -184,16 +184,24 @@ void turnLeft() {
 
 // Here starts the remote controlling code
 
+BLYNK_WRITE(V0) { // Switch remote control
+ if (param.asInt() == 1) {
+    rc = 1; 
+    Serial.println("Remote control on");
+  }else{
+    rc = 0;
+    Serial.println("Remote control off");
+  }
+}
+
 BLYNK_WRITE(V1) { // Drive forward
  if (param.asInt() == 1) {
     l_speed = 150;
     r_speed = 30;
-    rc = 1; 
     Serial.println("Button pressed");
   }else{
     Serial.println("Button not pressed");
     moveStop();
-    rc = 0;
   }
 }
 
@@ -201,10 +209,10 @@ BLYNK_WRITE(V2) { // Turn right
  if (param.asInt() == 1) {
     l_speed = 150;
     r_speed = 90; 
-    rc = 1;
+    Serial.println("Button pressed");
   }else{
     moveStop();
-    rc = 0;
+    Serial.println("Button not pressed");
   }
 }
 
@@ -212,10 +220,10 @@ BLYNK_WRITE(V3) { // Drive backward
  if (param.asInt() == 1) {
     l_speed = 30;
     r_speed = 150;
-    rc = 1;
+    Serial.println("Button pressed");
   }else{
     moveStop();
-    rc = 0;
+    Serial.println("Button not pressed");
   }
 }
 
@@ -223,9 +231,9 @@ BLYNK_WRITE(V4) { // Turn left
  if (param.asInt() == 1) {
     l_speed = 90;
     r_speed = 30;
-    rc = 1; 
+    Serial.println("Button pressed");
   }else{
     moveStop();
-    rc = 0;
+    Serial.println("Button not pressed");
   }
 }
